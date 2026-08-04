@@ -1,0 +1,27 @@
+{
+  "name": "@debrief/daemon",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "debrief": "dist/cli.js",
+    "debrief-daemon": "dist/cli.js"
+  },
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "build:runtime": "pnpm --filter @debrief/core build && pnpm build && node scripts/build-runtime.mjs",
+    "test": "pnpm --dir ../.. exec vitest run packages/daemon/src/__tests__"
+  },
+  "dependencies": {
+    "@debrief/core": "workspace:*",
+    "chokidar": "^3.6.0",
+    "pino": "^9.6.0",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.1"
+  }
+}

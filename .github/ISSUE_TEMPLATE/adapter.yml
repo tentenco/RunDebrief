@@ -1,0 +1,49 @@
+name: Adapter request
+description: Request support for another coding-agent history source.
+title: "adapter: "
+labels: ["provider", "needs-research"]
+body:
+  - type: input
+    id: provider
+    attributes:
+      label: Tool or provider
+      placeholder: Product name and official URL
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      multiple: true
+      options:
+        - macOS
+        - Windows
+        - Linux
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Local history source
+      description: Describe the documented storage format and location without pasting real content or a private path.
+    validations:
+      required: true
+  - type: textarea
+    id: workflow
+    attributes:
+      label: Continuity problem
+      description: What real interrupted-work or handoff problem would this adapter solve?
+    validations:
+      required: true
+  - type: input
+    id: evidence
+    attributes:
+      label: Public documentation or source link
+    validations:
+      required: true
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I can help create synthetic fixtures or test the adapter.

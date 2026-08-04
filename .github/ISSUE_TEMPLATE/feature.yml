@@ -1,0 +1,46 @@
+name: Product improvement
+description: Propose an improvement grounded in a real continuity workflow.
+title: "feat: "
+labels: ["enhancement", "needs-research"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: User problem
+      description: Describe the moment, user, and cost before describing a solution.
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: Current workaround
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: What should become easier, safer, or more trustworthy?
+    validations:
+      required: true
+  - type: dropdown
+    id: boundary
+    attributes:
+      label: Capability boundary
+      options:
+        - Read-only local continuity
+        - Evidence and handoff
+        - Attention and status
+        - Provider adapter
+        - Cross-platform packaging
+        - Mobile concept
+        - Remote action or approval
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: risk
+    attributes:
+      label: Privacy, security, or permission impact
+    validations:
+      required: true

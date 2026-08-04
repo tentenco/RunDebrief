@@ -1,0 +1,66 @@
+name: Bug report
+description: Report a reproducible product, parser, packaging, or accessibility problem.
+title: "bug: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include real transcripts, API keys, customer names, private repository names, usernames, or full machine paths. Report security issues through GitHub private vulnerability reporting, not this form.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Desktop app
+        - Claude Code adapter
+        - Codex adapter
+        - Scanner or daemon
+        - Summarization or fallback
+        - Packaging or installation
+        - Landing page or documentation
+        - Accessibility
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: What happened?
+      description: Describe the current behavior using synthetic or anonymized details.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Minimal reproduction
+      description: Include exact steps and commands, with secrets and private paths removed.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      placeholder: v0.1.0 or commit SHA
+    validations:
+      required: true
+  - type: input
+    id: platform
+    attributes:
+      label: macOS and hardware
+      placeholder: macOS 15.x, Apple Silicon
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy check
+      options:
+        - label: I removed secrets, real transcript text, private paths, and customer/repository identifiers.
+          required: true

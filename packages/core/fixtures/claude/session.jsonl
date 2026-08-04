@@ -1,0 +1,2 @@
+{"type":"user","timestamp":"2026-01-02T03:04:05.000Z","cwd":"/REDACTED/sample-repo","sessionId":"REDACTED","message":{"role":"user","content":"Please update the sample parser."}}
+{"type":"assistant","timestamp":"2026-01-02T03:05:06.000Z","cwd":"/REDACTED/sample-repo","sessionId":"REDACTED","message":{"role":"assistant","content":[{"type":"text","text":"The parser update is complete."},{"type":"tool_use","name":"Write","id":"REDACTED","input":{"file_path":"src/example.ts","content":"REDACTED"}}]}}

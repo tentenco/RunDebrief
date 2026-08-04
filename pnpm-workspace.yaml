@@ -1,0 +1,9 @@
+packages:
+  - packages/*
+
+# better-sqlite3 is a native module and must run its install script to fetch the
+# prebuilt binary; esbuild is vitest's bundler. Without these, pnpm 10+ silently
+# skips the build and the CLI fails at require time.
+allowBuilds:
+  better-sqlite3: true
+  esbuild: true

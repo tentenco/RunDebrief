@@ -1,0 +1,38 @@
+node_modules/
+dist/
+runtime-dist/
+target/
+*.tsbuildinfo
+.DS_Store
+/packages/app/test-results/
+/packages/app/playwright-report/
+
+# Runtime configuration and local secrets.
+.env
+.env.*
+!.env.example
+*.pem
+*.p12
+*.key
+*.cer
+*.crt
+*.mobileprovision
+
+# Local indexes, databases, journals, and logs.
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.sqlite-wal
+*.sqlite-shm
+*.wal
+*.shm
+*.log
+logs/
+.debrief/
+
+# Third-party source captures used only for local clone QA.
+/docs/design-references/superset-rundebrief-v2/
+/docs/research/superset-rundebrief-v2/captures/
+/docs/research/superset-rundebrief-v2/site-inspection.json
+/artifacts/qa/landing-v2/

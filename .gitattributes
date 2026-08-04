@@ -1,0 +1,27 @@
+# Public source archives are intentionally narrower than the private development tree.
+# GitHub's source browser does not honor export-ignore; follow docs/PUBLIC_EXPORT.md
+# and publish a clean export rather than pushing this private history as-is.
+
+/.agents export-ignore
+/.agents/** export-ignore
+/.claude export-ignore
+/.claude/** export-ignore
+/AGENTS.md export-ignore
+/CLAUDE.md export-ignore
+/PLANS.md export-ignore
+/DESIGN.md export-ignore
+
+/artifacts export-ignore
+/artifacts/** export-ignore
+/report export-ignore
+/report/** export-ignore
+
+/docs/brand export-ignore
+/docs/brand/** export-ignore
+/docs/research export-ignore
+/docs/research/** export-ignore
+/docs/design-references export-ignore
+/docs/design-references/** export-ignore
+/docs/launch/LAUNCH_STRATEGY.md export-ignore
+/docs/launch/MESSAGING.md export-ignore
+/scripts/build-naming-ledger.mjs export-ignore

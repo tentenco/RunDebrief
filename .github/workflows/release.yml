@@ -1,0 +1,248 @@
+name: Draft macOS prerelease
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing annotated release-candidate tag, for example v0.1.0-alpha
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: draft-release-${{ inputs.tag }}
+  cancel-in-progress: false
+
+jobs:
+  signed-macos:
+    name: ${{ matrix.arch }} signed and notarized DMG
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            arch: arm64
+            target: aarch64-apple-darwin
+          - runner: macos-15-intel
+            arch: x86_64
+            target: x86_64-apple-darwin
+    runs-on: ${{ matrix.runner }}
+    environment: release
+    timeout-minutes: 90
+
+    steps:
+      - name: Check out the tagged source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
+
+      - name: Fail closed unless tag, runner, and Apple secrets are valid
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+          EXPECTED_ARCH: ${{ matrix.arch }}
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          set -euo pipefail
+          if [[ ! "${RELEASE_TAG}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Release tag is not a supported semantic version tag."
+            exit 1
+          fi
+          git show-ref --tags --verify --quiet "refs/tags/${RELEASE_TAG}" || {
+            echo "::error::The requested release tag does not exist."
+            exit 1
+          }
+          if [[ "$(git cat-file -t "${RELEASE_TAG}")" != "tag" ]]; then
+            echo "::error::The requested release tag must be annotated."
+            exit 1
+          fi
+          if [[ "$(git rev-parse HEAD)" != "$(git rev-list -n 1 "${RELEASE_TAG}")" ]]; then
+            echo "::error::The checked-out commit does not match the release tag."
+            exit 1
+          fi
+          if [[ "$(uname -m)" != "${EXPECTED_ARCH}" ]]; then
+            echo "::error::Runner architecture does not match the native target."
+            exit 1
+          fi
+          missing=()
+          for secret_name in \
+            APPLE_CERTIFICATE \
+            APPLE_CERTIFICATE_PASSWORD \
+            APPLE_SIGNING_IDENTITY \
+            APPLE_ID \
+            APPLE_PASSWORD \
+            APPLE_TEAM_ID
+          do
+            if [[ -z "${!secret_name:-}" ]]; then
+              missing+=("${secret_name}")
+            fi
+          done
+          if (( ${#missing[@]} > 0 )); then
+            echo "::error::Missing required release secrets: ${missing[*]}"
+            exit 1
+          fi
+
+      - name: Import Developer ID certificate into an ephemeral keychain
+        shell: bash
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+        run: |
+          set -euo pipefail
+          certificate_path="${RUNNER_TEMP}/rundebrief-release.p12"
+          keychain_path="${RUNNER_TEMP}/rundebrief-release.keychain-db"
+          keychain_password="$(openssl rand -hex 24)"
+          echo "::add-mask::${keychain_password}"
+          printf '%s' "${APPLE_CERTIFICATE}" | base64 -D > "${certificate_path}"
+          security create-keychain -p "${keychain_password}" "${keychain_path}"
+          security set-keychain-settings -lut 21600 "${keychain_path}"
+          security unlock-keychain -p "${keychain_password}" "${keychain_path}"
+          security import "${certificate_path}" \
+            -k "${keychain_path}" \
+            -P "${APPLE_CERTIFICATE_PASSWORD}" \
+            -T /usr/bin/codesign \
+            -T /usr/bin/security
+          security set-key-partition-list \
+            -S apple-tool:,apple:,codesign: \
+            -s \
+            -k "${keychain_password}" \
+            "${keychain_path}"
+          security list-keychains -d user -s "${keychain_path}"
+          security find-identity -v -p codesigning "${keychain_path}" |
+            grep -F "${APPLE_SIGNING_IDENTITY}" >/dev/null || {
+              echo "::error::Configured Developer ID signing identity was not imported."
+              exit 1
+            }
+          {
+            echo "RUNDEBRIEF_CERTIFICATE_PATH=${certificate_path}"
+            echo "RUNDEBRIEF_KEYCHAIN_PATH=${keychain_path}"
+          } >> "${GITHUB_ENV}"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+        with:
+          version: 11.3.0
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install Rust target
+        uses: dtolnay/rust-toolchain@4cda84d5c5c54efe2404f9d843567869ab1699d4 # stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
+        with:
+          workspaces: packages/app/src-tauri
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify intended public tree
+        run: pnpm check:public
+
+      - name: Run unit tests
+        run: pnpm test
+
+      - name: Audit app design tokens
+        run: pnpm --filter @debrief/app audit:tokens
+
+      - name: Build, sign, notarize, and attach native artifacts
+        uses: tauri-apps/tauri-action@1deb371b0cd8bd54025b384f1cd735e725c4060f # v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        with:
+          projectPath: packages/app
+          tagName: ${{ inputs.tag }}
+          releaseName: RunDebrief ${{ inputs.tag }}
+          releaseBody: |
+            Draft prerelease generated from the tagged source.
+            This release must remain a draft until signature, notarization,
+            checksums, clean-install QA, and release notes are independently verified.
+          releaseDraft: true
+          prerelease: true
+          args: --target ${{ matrix.target }}
+
+      - name: Verify signature, notarization ticket, and Gatekeeper assessment
+        shell: bash
+        env:
+          TARGET: ${{ matrix.target }}
+        run: |
+          set -euo pipefail
+          bundle_root="packages/app/src-tauri/target/${TARGET}/release/bundle"
+          app_count=0
+          while IFS= read -r -d '' app_path; do
+            codesign --verify --deep --strict --verbose=2 "${app_path}"
+            app_count=$((app_count + 1))
+          done < <(find "${bundle_root}" -type d -name '*.app' -prune -print0)
+          if (( app_count == 0 )); then
+            echo "::error::No App bundle was found for signature verification."
+            exit 1
+          fi
+
+          dmg_count=0
+          while IFS= read -r -d '' dmg_path; do
+            xcrun stapler validate "${dmg_path}"
+            spctl -a -vv -t open --context context:primary-signature "${dmg_path}"
+            dmg_count=$((dmg_count + 1))
+          done < <(find "${bundle_root}" -type f -name '*.dmg' -print0)
+          if (( dmg_count == 0 )); then
+            echo "::error::No DMG was found for notarization and Gatekeeper verification."
+            exit 1
+          fi
+
+      - name: Generate and upload SHA-256 checksum files
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ inputs.tag }}
+          TARGET: ${{ matrix.target }}
+        run: |
+          set -euo pipefail
+          bundle_root="packages/app/src-tauri/target/${TARGET}/release/bundle"
+          checksum_files=()
+          while IFS= read -r -d '' asset_path; do
+            checksum_path="${asset_path}.sha256"
+            (
+              cd "$(dirname "${asset_path}")"
+              shasum -a 256 "$(basename "${asset_path}")" > "$(basename "${checksum_path}")"
+            )
+            checksum_files+=("${checksum_path}")
+          done < <(
+            find "${bundle_root}" -type f \( -name '*.dmg' -o -name '*.app.tar.gz' \) -print0
+          )
+          if (( ${#checksum_files[@]} == 0 )); then
+            echo "::error::No release assets were found for checksum generation."
+            exit 1
+          fi
+          gh release upload "${RELEASE_TAG}" "${checksum_files[@]}" --clobber
+
+      - name: Remove ephemeral signing material
+        if: always()
+        shell: bash
+        run: |
+          set +e
+          if [[ -n "${RUNDEBRIEF_KEYCHAIN_PATH:-}" ]]; then
+            security delete-keychain "${RUNDEBRIEF_KEYCHAIN_PATH}"
+          fi
+          if [[ -n "${RUNDEBRIEF_CERTIFICATE_PATH:-}" ]]; then
+            rm -f "${RUNDEBRIEF_CERTIFICATE_PATH}"
+          fi

@@ -1,0 +1,4 @@
+{"timestamp":"2026-01-03T04:05:06.000Z","type":"session_meta","payload":{"id":"REDACTED","timestamp":"2026-01-03T04:05:06.000Z","cwd":"/REDACTED/sample-repo","originator":"codex_cli_rs","cli_version":"0.0.0","source":"cli","model_provider":"REDACTED"}}
+{"timestamp":"2026-01-03T04:05:07.000Z","type":"response_item","payload":{"type":"message","role":"user","content":[{"type":"input_text","text":"Add a fixture-safe example."}]}}
+{"timestamp":"2026-01-03T04:05:08.000Z","type":"response_item","payload":{"type":"function_call","name":"apply_patch","arguments":"{\"input\":\"*** Begin Patch\\n*** Update File: src/example.ts\\n@@\\n-REDACTED\\n+REDACTED\\n*** End Patch\"}","call_id":"REDACTED"}}
+{"timestamp":"2026-01-03T04:05:09.000Z","type":"response_item","payload":{"type":"message","role":"assistant","content":[{"type":"output_text","text":"The fixture-safe example was added."}]}}

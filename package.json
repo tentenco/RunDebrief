@@ -1,0 +1,29 @@
+{
+  "name": "debrief",
+  "private": true,
+  "packageManager": "pnpm@11.3.0",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "pnpm --filter @debrief/core build && pnpm --filter @debrief/daemon build && pnpm --filter @debrief/app build",
+    "build:landing": "pnpm --filter @rundebrief/landing build",
+    "dev:landing": "pnpm --filter @rundebrief/landing dev",
+    "check:public": "node scripts/check-public-release.mjs",
+    "debrief": "tsx packages/daemon/src/cli.ts",
+    "test": "vitest run",
+    "test:app-smoke": "pnpm --filter @debrief/app test:smoke"
+  },
+  "dependencies": {
+    "@debrief/core": "workspace:*",
+    "@debrief/daemon": "workspace:*",
+    "@debrief/app": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^22.15.3",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.2"
+  }
+}
