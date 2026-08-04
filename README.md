@@ -78,7 +78,7 @@ The canonical release page will be [GitHub Releases](https://github.com/tentenco
 ### Requirements
 
 - macOS 12 or newer
-- Node.js 20 or newer
+- Node.js 22.13 or newer
 - Corepack and pnpm 11.3.0
 - Rust stable
 - Xcode Command Line Tools and the Tauri v2 macOS prerequisites

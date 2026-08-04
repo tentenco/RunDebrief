@@ -78,7 +78,7 @@ AI 摘要是明確的網路邊界。當 `~/.debrief/config.json` 設定了 `gate
 ### 環境需求
 
 - macOS 12 或更新版本
-- Node.js 20 或更新版本
+- Node.js 22.13 或更新版本
 - Corepack 與 pnpm 11.3.0
 - Rust stable
 - Xcode Command Line Tools 與 Tauri v2 的 macOS prerequisites
