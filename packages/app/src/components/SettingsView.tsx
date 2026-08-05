@@ -20,8 +20,9 @@ export function SettingsView({
   const { t, i18n } = useTranslation();
   const locale = currentLocale();
   const choices: Array<{ value: AppLocale; label: string }> = [
-    { value: "zh-Hant", label: t("settings.zhHant") },
     { value: "en", label: t("settings.english") },
+    { value: "zh-Hant", label: t("settings.zhHant") },
+    { value: "zh-CN", label: t("settings.zhHans") },
   ];
 
   return (

@@ -40,9 +40,7 @@ RunDebrief 將支援的本機歷史整理成以專案為核心的 handoff：做�
 - 查看摘要背後最新的原始 user／assistant turns。
 - 搜尋、篩選、排序、置頂、隱藏、重新命名、標記處理與重開工作。
 - 未設定 AI summary gateway 時，使用 deterministic local fallback。
-- App 介面支援 English 與繁體中文，並提供明／暗色主題。
-
-App 介面目前**不支援簡體中文**；簡體中文 README 只提供文件翻譯。
+- App 介面支援 English、繁體中文與簡體中文，並提供明／暗色主題。
 
 <table>
   <tr>
@@ -66,7 +64,7 @@ AI 摘要是明確的網路邊界。當 `~/.debrief/config.json` 設定了 `gate
 - 僅支援 macOS；Windows 與 Linux build 尚未發布。
 - 尚無完成簽章與 Apple 公證的公開 binary。
 - 目前只支援 Claude Code 與 Codex 兩種歷史 adapter。
-- App UI 支援 English 與繁體中文，不支援簡體中文。
+- App UI 支援 English、繁體中文與簡體中文，尚未提供其他語言。
 - 尚無 iOS App、hosted sync、push notification、approval flow 或 remote prompting。
 - 摘要可能不完整或錯誤；仍須檢查來源證據、程式碼、diff 與測試。
 - Developer ID 簽章與 Apple 公證的安裝檔，仍是 binary distribution 尚待完成的 gate。

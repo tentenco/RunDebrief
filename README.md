@@ -20,7 +20,7 @@ The open-source continuity layer for coding agents.
 
 > **Naming note:** RunDebrief is the public working name. The app and internal package identifiers still use `Debrief` until a separately reviewed migration is approved.
 
-![RunDebrief project overview in the current Traditional Chinese interface](./packages/landing/public/screenshots/overview-light.png)
+![RunDebrief project overview in the English interface](./packages/landing/public/screenshots/en/overview-light.png)
 
 ## Why RunDebrief
 
@@ -40,14 +40,12 @@ The current alpha is a macOS desktop app built with Tauri, React, TypeScript, Ru
 - Inspect the latest original user and assistant turns behind a summary.
 - Search, filter, sort, pin, hide, rename, acknowledge, and reopen work.
 - Use a deterministic local fallback when no AI summary gateway is configured.
-- Use the app interface in English or Traditional Chinese, with light and dark themes.
-
-The app interface does **not** currently include Simplified Chinese. The Simplified Chinese README is documentation only.
+- Use the app interface in English, Traditional Chinese, or Simplified Chinese, with light and dark themes.
 
 <table>
   <tr>
-    <td width="50%"><img src="./packages/landing/public/screenshots/detail-light.png" alt="RunDebrief detail view with summary, next steps, and evidence" /></td>
-    <td width="50%"><img src="./packages/landing/public/screenshots/turn-log-light.png" alt="RunDebrief original turn log expanded beneath a run summary" /></td>
+    <td width="50%"><img src="./packages/landing/public/screenshots/en/detail-light.png" alt="RunDebrief English detail view with summary, next steps, and evidence" /></td>
+    <td width="50%"><img src="./packages/landing/public/screenshots/en/turn-log-light.png" alt="RunDebrief English original turn log expanded beneath a run summary" /></td>
   </tr>
 </table>
 
@@ -66,7 +64,7 @@ RunDebrief has no silent analytics or hosted synchronization in this alpha. Revi
 - macOS only; Windows and Linux builds have not shipped.
 - No signed or notarized public binary exists yet.
 - Claude Code and Codex are the only supported history adapters.
-- The app UI supports English and Traditional Chinese, not Simplified Chinese.
+- The app UI supports English, Traditional Chinese, and Simplified Chinese; other UI languages are not included.
 - No iOS app, hosted sync, push notification, approval flow, or remote prompting exists yet.
 - Summaries can be incomplete or wrong; inspect source evidence, code, diffs, and tests.
 - A Developer ID-signed and Apple-notarized installer remains the outstanding binary-distribution gate.
