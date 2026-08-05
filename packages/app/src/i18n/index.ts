@@ -19,6 +19,15 @@ export function normalizeLocale(value: string | null | undefined): AppLocale | n
   ) {
     return "zh-Hant";
   }
+  if (
+    normalized === "zh-hans" ||
+    normalized === "zh-cn" ||
+    normalized.startsWith("zh-cn-") ||
+    normalized === "zh-sg" ||
+    normalized.startsWith("zh-sg-")
+  ) {
+    return "zh-CN";
+  }
   if (normalized === "en" || normalized.startsWith("en-")) return "en";
   return null;
 }
@@ -52,7 +61,7 @@ export function writeLocalePreference(
 
 export function localeFromSearch(search: string): AppLocale | null {
   const requested = new URLSearchParams(search).get("locale");
-  return requested === "zh-Hant" || requested === "en" ? requested : null;
+  return normalizeLocale(requested);
 }
 
 export function resolveInitialLocale({
@@ -91,7 +100,7 @@ void i18n.use(initReactI18next).init({
   resources,
   lng: initial.locale,
   fallbackLng: "en",
-  supportedLngs: ["zh-Hant", "en"],
+  supportedLngs: ["en", "zh-Hant", "zh-CN"],
   interpolation: { escapeValue: false },
   react: { useSuspense: false },
 });

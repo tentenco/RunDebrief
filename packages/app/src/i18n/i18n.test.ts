@@ -11,7 +11,7 @@ import {
   writeLocalePreference,
 } from ".";
 import i18n from ".";
-import { en, zhHant } from "./resources";
+import { en, zhHans, zhHant } from "./resources";
 
 function leafKeys(value: unknown, prefix = ""): string[] {
   if (!value || typeof value !== "object") return [prefix];
@@ -21,18 +21,21 @@ function leafKeys(value: unknown, prefix = ""): string[] {
 }
 
 describe("locale preferences", () => {
-  it("normalizes only supported English and Traditional Chinese locales", () => {
+  it("normalizes supported English, Traditional Chinese, and Simplified Chinese locales", () => {
     expect(normalizeLocale("zh-TW")).toBe("zh-Hant");
     expect(normalizeLocale("zh_Hant")).toBe("zh-Hant");
     expect(normalizeLocale("zh-HK")).toBe("zh-Hant");
     expect(normalizeLocale("zh-MO")).toBe("zh-Hant");
+    expect(normalizeLocale("zh-CN")).toBe("zh-CN");
+    expect(normalizeLocale("zh_Hans")).toBe("zh-CN");
+    expect(normalizeLocale("zh-SG")).toBe("zh-CN");
     expect(normalizeLocale("en-US")).toBe("en");
-    expect(normalizeLocale("zh-CN")).toBeNull();
     expect(normalizeLocale("fr")).toBeNull();
   });
 
   it("uses navigator language order and falls back to English", () => {
     expect(localeFromLanguages(["fr-FR", "zh-TW"])).toBe("zh-Hant");
+    expect(localeFromLanguages(["fr-FR", "zh-CN"])).toBe("zh-CN");
     expect(localeFromLanguages(["en-US", "zh-TW"])).toBe("en");
     expect(localeFromLanguages(["fr-FR"])).toBe("en");
   });
@@ -41,6 +44,9 @@ describe("locale preferences", () => {
     writeLocalePreference(window.localStorage, "zh-Hant");
     expect(window.localStorage.getItem(LOCALE_STORAGE_KEY)).toBe("zh-Hant");
     expect(readLocalePreference(window.localStorage)).toBe("zh-Hant");
+    writeLocalePreference(window.localStorage, "zh-CN");
+    expect(window.localStorage.getItem(LOCALE_STORAGE_KEY)).toBe("zh-CN");
+    expect(readLocalePreference(window.localStorage)).toBe("zh-CN");
     window.localStorage.setItem(LOCALE_STORAGE_KEY, "fr");
     expect(readLocalePreference(window.localStorage)).toBeNull();
   });
@@ -48,6 +54,8 @@ describe("locale preferences", () => {
   it("uses a demo query override without replacing stored preference", () => {
     window.localStorage.setItem(LOCALE_STORAGE_KEY, "zh-Hant");
     expect(localeFromSearch("?locale=en")).toBe("en");
+    expect(localeFromSearch("?locale=zh-CN")).toBe("zh-CN");
+    expect(localeFromSearch("?locale=zh-Hans")).toBe("zh-CN");
     expect(
       resolveInitialLocale({
         storage: window.localStorage,
@@ -61,8 +69,16 @@ describe("locale preferences", () => {
 });
 
 describe("translation resources", () => {
-  it("keeps English and Traditional Chinese leaf keys in exact parity", () => {
+  it("keeps all three locale leaf keys in exact parity", () => {
     expect(leafKeys(en).sort()).toEqual(leafKeys(zhHant).sort());
+    expect(leafKeys(en).sort()).toEqual(leafKeys(zhHans).sort());
+  });
+
+  it("keeps Simplified Chinese UI copy free of Traditional-only glyphs", () => {
+    const values = JSON.stringify(zhHans);
+    expect(values).not.toMatch(
+      /[專設儲開載選尋導覽執機檢應隱權介檔資庫錄連線獲讀偵測複製調曳雙擊鎖碼覆體]/,
+    );
   });
 
   it("describes asynchronous native application opens as in progress", async () => {
@@ -80,6 +96,14 @@ describe("translation resources", () => {
     ).toBe("正在 Visual Studio Code 開啟 Debrief");
     expect(i18n.t("app.warpOpening", { project: "Debrief" })).toBe(
       "正在 Warp 開啟 Debrief 專案目錄",
+    );
+
+    await i18n.changeLanguage("zh-CN");
+    expect(
+      i18n.t("app.visualStudioCodeOpening", { project: "Debrief" }),
+    ).toBe("正在 Visual Studio Code 打开 Debrief");
+    expect(i18n.t("app.warpOpening", { project: "Debrief" })).toBe(
+      "正在 Warp 打开 Debrief 项目目录",
     );
   });
 

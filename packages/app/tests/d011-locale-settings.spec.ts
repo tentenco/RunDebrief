@@ -128,6 +128,34 @@ test("English singular counts render in the workspace and source evidence", asyn
   ).toBeVisible();
 });
 
+test("forced English and Simplified Chinese screenshot scenes localize demo evidence", async ({
+  page,
+}) => {
+  await page.goto("/?locale=en&theme=light");
+  const englishDebriefRow = page.getByRole("button", { name: /^debrief,/ });
+  await expect(
+    englishDebriefRow.getByText(
+      "Complete the remaining verification and hand off to QA",
+      { exact: true },
+    ),
+  ).toBeVisible();
+  expect(await page.locator("body").innerText()).not.toMatch(/[\u3400-\u9fff]/);
+
+  await page.goto("/?locale=zh-CN&theme=light");
+  const simplifiedDebriefRow = page.getByRole("button", {
+    name: /^debrief,/,
+  });
+  await expect(
+    simplifiedDebriefRow.getByText(
+      "完成其余验证并交付 QA",
+      { exact: true },
+    ),
+  ).toBeVisible();
+  expect(await page.locator("body").innerText()).not.toMatch(
+    /[專設儲開載選尋導覽執機檢應隱權介檔資庫錄連線獲讀偵測複製調曳雙擊鎖碼覆體餘驗證與]/,
+  );
+});
+
 test("healthy rules fallback is status detail, not an alert banner", async ({
   page,
 }) => {
@@ -184,16 +212,60 @@ test("English Settings remains accessible without horizontal overflow at 980x640
   await assertAccessible(page);
 });
 
+test("Simplified Chinese locale is ordered, immediate, persistent, and screenshot-ready", async ({
+  page,
+}) => {
+  await page.goto("/?theme=light");
+  await page.keyboard.press("Meta+,");
+
+  const localeOptions = page.locator(
+    '.settings-language-options input[name="debrief-locale"]',
+  );
+  await expect(localeOptions).toHaveCount(3);
+  await expect(localeOptions.nth(0)).toHaveValue("en");
+  await expect(localeOptions.nth(1)).toHaveValue("zh-Hant");
+  await expect(localeOptions.nth(2)).toHaveValue("zh-CN");
+
+  await page.getByRole("radio", { name: "简体中文" }).click();
+  await expect(
+    page.getByRole("heading", { name: "设置", level: 1 }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "打开 macOS「隐私与安全性」" }),
+  ).toBeVisible();
+  await expect
+    .poll(() =>
+      page.evaluate(() => ({
+        lang: document.documentElement.lang,
+        stored: window.localStorage.getItem("debrief-locale"),
+      })),
+    )
+    .toEqual({ lang: "zh-CN", stored: "zh-CN" });
+  await assertAccessible(page);
+
+  await page.reload();
+  await page.keyboard.press("Meta+,");
+  await expect(
+    page.getByRole("heading", { name: "设置", level: 1 }),
+  ).toBeVisible();
+  await expect(page.getByRole("radio", { name: "简体中文" })).toBeChecked();
+});
+
 test("Settings locale and theme matrix is screenshot-ready", async ({
   page,
 }) => {
-  for (const locale of ["zh-Hant", "en"] as const) {
+  for (const locale of ["en", "zh-Hant", "zh-CN"] as const) {
     for (const theme of ["light", "dark"] as const) {
       await page.goto(`/?locale=${locale}&theme=${theme}`);
       await page.keyboard.press("Meta+,");
       await expect(
         page.getByRole("heading", {
-          name: locale === "en" ? "Settings" : "設定",
+          name:
+            locale === "en"
+              ? "Settings"
+              : locale === "zh-Hant"
+                ? "設定"
+                : "设置",
           level: 1,
         }),
       ).toBeVisible();
@@ -201,7 +273,7 @@ test("Settings locale and theme matrix is screenshot-ready", async ({
       await page.screenshot({
         path: path.join(
           screenshotsDirectory,
-          `G4-settings-${locale === "en" ? "en" : "zh"}-${theme}.png`,
+          `G4-settings-${locale}-${theme}.png`,
         ),
         animations: "disabled",
       });

@@ -13,7 +13,7 @@
 - Original user/assistant turn inspection from approved source roots.
 - Search, filtering, sorting, pinning, hiding, renaming, acknowledgment, and native reopen actions.
 - Deterministic fallback for ended sessions when no summary gateway is configured.
-- English and Traditional Chinese App UI, light/dark themes, and keyboard/accessibility coverage.
+- English, Traditional Chinese, and Simplified Chinese App UI, light/dark themes, and keyboard/accessibility coverage.
 
 ### Privacy boundaries
 
@@ -34,7 +34,7 @@ No filenames or hashes are listed here before the workflow produces them.
 - The release candidate has not been published and currently has no official installer.
 - macOS 12+ only; Windows and Linux have not shipped.
 - Claude Code and Codex only.
-- App UI languages are English and Traditional Chinese; Simplified Chinese is documentation only.
+- App UI languages are English, Traditional Chinese, and Simplified Chinese; other UI languages are not included.
 - Summaries can be incomplete or wrong; inspect source evidence, code, diffs, and tests.
 - No iOS, hosted sync, notifications, approvals, or remote prompting.
 - RunDebrief is the public working name while internal identifiers still use `Debrief`.
@@ -66,7 +66,7 @@ Do not publish until the release owner verifies both architectures, confirms pri
 - 從核准的來源路徑檢視原始 user／assistant turns。
 - 搜尋、篩選、排序、置頂、隱藏、重新命名、標記處理與原生重開動作。
 - 未設定 summary gateway 時，為已結束的 session 提供 deterministic fallback。
-- English／繁體中文 App UI、明暗主題，以及 keyboard／accessibility coverage。
+- English／繁體中文／簡體中文 App UI、明暗主題，以及 keyboard／accessibility coverage。
 
 ### 隱私邊界
 
@@ -87,7 +87,7 @@ Workflow 尚未實際產出前，本文件不預先填寫檔名或 hash。
 - Release candidate 尚未發布，目前沒有官方安裝檔。
 - 僅支援 macOS 12+；Windows 與 Linux 尚未發布。
 - 僅支援 Claude Code 與 Codex。
-- App UI 語言為 English 與繁體中文；簡體中文只提供文件。
+- App UI 語言為 English、繁體中文與簡體中文；尚未提供其他語言。
 - 摘要可能不完整或錯誤；仍須檢查來源證據、程式碼、diff 與測試。
 - 尚無 iOS、hosted sync、notifications、approvals 或 remote prompting。
 - RunDebrief 是公開工作名稱，內部 identifiers 仍使用 `Debrief`。
@@ -119,7 +119,7 @@ Release owner 驗證兩種架構、確認 private vulnerability reporting、完�
 - 从获准的来源路径检查原始 user／assistant turns。
 - 搜索、筛选、排序、置顶、隐藏、重命名、确认处理与原生重新打开操作。
 - 未配置 summary gateway 时，为已结束的 session 提供 deterministic fallback。
-- English／繁体中文 App UI、浅色／深色主题，以及 keyboard／accessibility coverage。
+- English／繁体中文／简体中文 App UI、浅色／深色主题，以及 keyboard／accessibility coverage。
 
 ### 隐私边界
 
@@ -140,7 +140,7 @@ Workflow 尚未实际产出前，本文件不预先填写文件名或 hash。
 - Release candidate 尚未发布，目前没有官方安装包。
 - 仅支持 macOS 12+；Windows 与 Linux 尚未发布。
 - 仅支持 Claude Code 与 Codex。
-- App UI 语言为 English 与繁体中文；简体中文只提供文档。
+- App UI 语言为 English、繁体中文与简体中文；尚未提供其他语言。
 - 摘要可能不完整或错误；仍须检查来源证据、代码、diff 与测试。
 - 尚无 iOS、hosted sync、notifications、approvals 或 remote prompting。
 - RunDebrief 是公开工作名称，内部 identifiers 仍使用 `Debrief`。

@@ -1,3 +1,5 @@
+import { zhHans } from "./zh-Hans";
+
 export const zhHant = {
   common: {
     debrief: "Debrief",
@@ -263,6 +265,7 @@ export const zhHant = {
     languageDescription: "選擇 Debrief 的介面語言。變更會立即生效並保留在這台 Mac。",
     languageLegend: "介面語言",
     zhHant: "繁體中文",
+    zhHans: "简体中文",
     english: "English",
     privacyTitle: "隱私權與安全性",
     privacyDescription: "需要自行檢查 macOS 的檔案或 App 權限時，可手動開啟系統設定。Debrief 不會讀取私有 TCC 資料庫，也不會替你變更權限。",
@@ -723,6 +726,7 @@ export const en = {
     languageDescription: "Choose Debrief's interface language. Changes apply immediately and remain on this Mac.",
     languageLegend: "Interface language",
     zhHant: "繁體中文",
+    zhHans: "简体中文",
     english: "English",
     privacyTitle: "Privacy & Security",
     privacyDescription: "When you need to inspect macOS file or App permissions, open System Settings manually. Debrief does not read the private TCC database or change permissions for you.",
@@ -918,6 +922,9 @@ export const en = {
 } as const;
 
 export const resources = {
-  "zh-Hant": { translation: zhHant },
   en: { translation: en },
+  "zh-Hant": { translation: zhHant },
+  "zh-CN": { translation: zhHans },
 } as const;
+
+export { zhHans };

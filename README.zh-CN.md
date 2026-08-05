@@ -20,7 +20,7 @@
 
 > **命名说明：** RunDebrief 是目前的公开工作名称。App 与内部 package identifier 仍使用 `Debrief`；除非另有经过审查的迁移方案，否则不会擅自更改。
 
-![RunDebrief 当前繁体中文界面的项目总览](./packages/landing/public/screenshots/overview-light.png)
+![RunDebrief 简体中文界面的项目总览](./packages/landing/public/screenshots/zh-CN/overview-light.png)
 
 ## 为什么需要 RunDebrief
 
@@ -40,14 +40,12 @@ RunDebrief 将受支持的本地历史整理为以项目为中心的 handoff：�
 - 查看摘要背后最新的原始 user／assistant turns。
 - 搜索、筛选、排序、置顶、隐藏、重命名、确认处理并重新打开工作。
 - 未配置 AI summary gateway 时，使用 deterministic local fallback。
-- App 界面支持 English 与繁体中文，并提供浅色／深色主题。
-
-App 界面目前**不支持简体中文**；本简体中文 README 仅提供文档翻译。
+- App 界面支持 English、繁体中文与简体中文，并提供浅色／深色主题。
 
 <table>
   <tr>
-    <td width="50%"><img src="./packages/landing/public/screenshots/detail-light.png" alt="RunDebrief 详情界面，包含摘要、下一步与证据" /></td>
-    <td width="50%"><img src="./packages/landing/public/screenshots/turn-log-light.png" alt="RunDebrief 在摘要下展开原始对话记录" /></td>
+    <td width="50%"><img src="./packages/landing/public/screenshots/zh-CN/detail-light.png" alt="RunDebrief 简体中文详情界面，包含摘要、下一步与证据" /></td>
+    <td width="50%"><img src="./packages/landing/public/screenshots/zh-CN/turn-log-light.png" alt="RunDebrief 简体中文界面在摘要下展开原始对话记录" /></td>
   </tr>
 </table>
 
@@ -66,7 +64,7 @@ AI 摘要是明确的网络边界。当 `~/.debrief/config.json` 配置了 `gate
 - 仅支持 macOS；Windows 与 Linux build 尚未发布。
 - 尚无完成签名与 Apple 公证的公开 binary。
 - 当前仅支持 Claude Code 与 Codex 两种历史 adapter。
-- App UI 支持 English 与繁体中文，不支持简体中文。
+- App UI 支持 English、繁体中文与简体中文，尚未提供其他语言。
 - 尚无 iOS App、hosted sync、push notification、approval flow 或 remote prompting。
 - 摘要可能不完整或错误；仍须检查来源证据、代码、diff 与测试。
 - Developer ID 签名与 Apple 公证的安装包，仍是 binary distribution 尚待完成的 gate。

@@ -10,7 +10,15 @@ import type {
   SessionTurnLogPage,
   Summary,
 } from "../types";
-import i18n from "../i18n";
+import i18n, { currentLocale } from "../i18n";
+
+function demoText(en: string, zhHant: string, zhHans: string): string {
+  return {
+    en,
+    "zh-Hant": zhHant,
+    "zh-CN": zhHans,
+  }[currentLocale()];
+}
 
 const now = Date.now();
 const hoursAgo = (hours: number) =>
@@ -27,9 +35,32 @@ const summary = (
   generatedAt: hoursAgo(1),
   model: "deepseek-chat",
   stateSummary,
-  openItems: ["確認目前 gate evidence", "整理下一步 implementation scope"],
-  nextSteps: ["完成剩餘驗證並交付 QA"],
-  decisions: ["維持 read-only SQLite query surface"],
+  openItems: [
+    demoText(
+      "Verify the current gate evidence",
+      "確認目前 gate evidence",
+      "确认当前 gate 证据",
+    ),
+    demoText(
+      "Define the next implementation scope",
+      "整理下一步 implementation scope",
+      "整理下一步实现范围",
+    ),
+  ],
+  nextSteps: [
+    demoText(
+      "Complete the remaining verification and hand off to QA",
+      "完成剩餘驗證並交付 QA",
+      "完成其余验证并交付 QA",
+    ),
+  ],
+  decisions: [
+    demoText(
+      "Keep the SQLite query surface read-only",
+      "維持 read-only SQLite query surface",
+      "保持 SQLite 查询接口只读",
+    ),
+  ],
   keyFiles: ["packages/app/src/App.tsx", "DESIGN.md"],
   blocked: false,
   blockedReason: null,
@@ -69,7 +100,11 @@ const sessions = new Map<number, Session[]>([
         summary(
           101,
           11,
-          "App shell 與資料讀取契約已接好，正在完成 card states 與 native actions。",
+          demoText(
+            "The App shell and data-reading contract are connected; card states and native actions are being completed.",
+            "App shell 與資料讀取契約已接好，正在完成 card states 與 native actions。",
+            "App shell 与数据读取协议已经接通，正在完善卡片状态与原生操作。",
+          ),
         ),
       ),
     ],
@@ -86,14 +121,34 @@ const sessions = new Map<number, Session[]>([
         summary(
           102,
           21,
-          "Watcher 到 router 的事件橋接完成，classifier fallback 尚未接上。",
+          demoText(
+            "The Watcher-to-router event bridge is complete; the classifier fallback is not connected yet.",
+            "Watcher 到 router 的事件橋接完成，classifier fallback 尚未接上。",
+            "Watcher 到 router 的事件桥接已完成，classifier fallback 尚未接入。",
+          ),
           {
             blocked: true,
-            blockedReason: "等待 API contract 確認",
+            blockedReason: demoText(
+              "Waiting for API contract confirmation",
+              "等待 API contract 確認",
+              "等待确认 API 协议",
+            ),
             openItems: [
-              "確認 classifier response schema",
-              "補上 fallback integration",
-              "重跑事件順序測試",
+              demoText(
+                "Confirm the classifier response schema",
+                "確認 classifier response schema",
+                "确认 classifier 响应结构",
+              ),
+              demoText(
+                "Complete the fallback integration",
+                "補上 fallback integration",
+                "补全 fallback 集成",
+              ),
+              demoText(
+                "Rerun the event-order tests",
+                "重跑事件順序測試",
+                "重新运行事件顺序测试",
+              ),
             ],
           },
         ),
@@ -112,7 +167,11 @@ const sessions = new Map<number, Session[]>([
         summary(
           103,
           31,
-          "Proposal portal 已完成模板整合與靜態預覽。",
+          demoText(
+            "The proposal portal template integration and static preview are complete.",
+            "Proposal portal 已完成模板整合與靜態預覽。",
+            "Proposal portal 已完成模板集成与静态预览。",
+          ),
         ),
       ),
     ],
@@ -129,7 +188,11 @@ const sessions = new Map<number, Session[]>([
         summary(
           104,
           41,
-          "Research catalog 已同步，等待下一批人工審核。",
+          demoText(
+            "The research catalog is synchronized and waiting for the next manual review batch.",
+            "Research catalog 已同步，等待下一批人工審核。",
+            "Research catalog 已同步，正在等待下一批人工审核。",
+          ),
         ),
       ),
     ],
@@ -147,9 +210,19 @@ const sessions = new Map<number, Session[]>([
         "claude-code",
         "fix/summary",
         hoursAgo(3),
-        summary(106, 61, "Gateway 無法產生結構化摘要，已保留規則式結果。", {
+        summary(106, 61, demoText(
+          "The Gateway could not produce a structured summary, so the rules-based result was preserved.",
+          "Gateway 無法產生結構化摘要，已保留規則式結果。",
+          "Gateway 无法生成结构化摘要，已保留基于规则的结果。",
+        ), {
           model: "rules-fallback",
-          openItems: ["檢查 gateway availability 後重新整理"],
+          openItems: [
+            demoText(
+              "Check Gateway availability, then refresh",
+              "檢查 gateway availability 後重新整理",
+              "检查 Gateway 可用性后刷新",
+            ),
+          ],
         }),
       ),
     ],
@@ -356,9 +429,19 @@ const d013Session = (
     summary(
       id + 10_000,
       id,
-      `${projectName} 保留 provider-native model 與 session usage evidence。`,
+      demoText(
+        `${projectName} preserves provider-native model and session usage evidence.`,
+        `${projectName} 保留 provider-native model 與 session usage evidence。`,
+        `${projectName} 保留 provider-native 模型与会话用量证据。`,
+      ),
       {
-        nextSteps: ["驗證 Token 用量與 coverage 呈現。"],
+        nextSteps: [
+          demoText(
+            "Verify Token usage and coverage presentation.",
+            "驗證 Token 用量與 coverage 呈現。",
+            "验证 Token 用量与 coverage 显示。",
+          ),
+        ],
       },
     ),
     latestUsage,
@@ -727,10 +810,16 @@ export class DemoRepository implements DashboardRepository {
         {
           ordinal: 1,
           timestamp: currentSession.startedAt,
-          userPrompt:
+          userPrompt: demoText(
+            "Confirm the current progress, preserve existing data, and complete the next verifiable step.",
             "請確認目前進度，保留既有資料，並完成下一個可驗證的步驟。",
-          assistantResponse:
+            "请确认当前进度，保留现有数据，并完成下一个可验证的步骤。",
+          ),
+          assistantResponse: demoText(
+            "I reviewed the current state and completed the safe in-scope update. The next step is to run the corresponding gate.",
             "已讀取目前狀態並完成安全範圍內的更新；下一步是執行對應 gate。",
+            "已读取当前状态并完成安全范围内的更新；下一步是运行对应 gate。",
+          ),
         },
         {
           ordinal: 2,
@@ -749,8 +838,11 @@ export class DemoRepository implements DashboardRepository {
             "const ready = true;",
             "```",
           ].join("\n"),
-          assistantResponse:
+          assistantResponse: demoText(
+            "## Result\n\nThe implementation is complete. Verification and delivery remain.",
             "## Result\n\n目前 implementation 已完成，剩餘工作是驗證與交付。",
+            "## 结果\n\n当前实现已完成，剩余工作是验证与交付。",
+          ),
         },
       ].slice(-Math.max(1, Math.min(limit, 20))),
       totalTurns: 2,
