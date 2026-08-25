@@ -14,7 +14,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "better-sqlite3": "^11.9.1",
-    "pino": "^9.6.0"
+    "better-sqlite3": "^13.0.3",
+    "pino": "^10.3.1"
   }
 }
