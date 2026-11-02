@@ -19,7 +19,7 @@
     "@debrief/core": "workspace:*",
     "chokidar": "^3.6.0",
     "pino": "^9.6.0",
-    "zod": "^3.24.4"
+    "zod": "^4.6.6"
   },
   "devDependencies": {
     "esbuild": "^0.28.1"
